@@ -61,10 +61,14 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+let modeToggle = null;
+
 function ensureActionButton(context) {
   if (context === "none") {
     actionButton?.remove();
     actionButton = null;
+    modeToggle?.remove();
+    modeToggle = null;
     return;
   }
   if (actionButton) {
@@ -76,6 +80,16 @@ function ensureActionButton(context) {
   actionButton.textContent = context === "profile" ? "Research this person" : "Research this thread";
   actionButton.addEventListener("click", onActionClick);
   document.body.appendChild(actionButton);
+
+  modeToggle = document.createElement("label");
+  modeToggle.id = "primer-mode-toggle";
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = currentMode === "deep";
+  checkbox.addEventListener("change", onModeToggle);
+  modeToggle.appendChild(checkbox);
+  modeToggle.appendChild(document.createTextNode("Deep research"));
+  document.body.appendChild(modeToggle);
 }
 
 function onActionClick() {
@@ -184,6 +198,13 @@ if (typeof chrome !== "undefined" && chrome.runtime) {
       renderPanel({ state: "draft", variants: message.variants });
     } else if (message.type === "ERROR") {
       renderPanel({ state: "error", message: message.message, dependency: message.dependency });
+    }
+  });
+
+  chrome.storage.local.get(["defaultMode"]).then((stored) => {
+    if (stored.defaultMode === "deep") {
+      currentMode = "deep";
+      if (modeToggle) modeToggle.querySelector("input").checked = true;
     }
   });
 
