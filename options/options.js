@@ -15,7 +15,7 @@ document.getElementById("settings-form").addEventListener("submit", async (event
     const el = document.getElementById(field);
     if (field === "obsidianPort") {
       const port = Number(el.value);
-      values[field] = Number.isInteger(port) && port > 0 ? port : 27124;
+      values[field] = Number.isInteger(port) && port > 0 ? port : 27123;
     } else {
       values[field] = el.value;
     }

@@ -35,6 +35,6 @@
     "https://www.linkedin.com/*",
     "https://api.anthropic.com/*",
     "https://api.tavily.com/*",
-    "https://127.0.0.1:27124/*"
+    "http://127.0.0.1:*/*"
   ]
 }

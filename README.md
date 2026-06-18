@@ -6,8 +6,8 @@ See `Primer_PRD.docx` and `Primer_Implementation_Spec.md` for the full product a
 
 ## One-time setup
 
-1. **Obsidian Local REST API plugin** — install and enable the community plugin, note its API key (Settings → Local REST API) and port (default `27124`).
-2. **Trust the self-signed certificate** — visit `https://127.0.0.1:27124/` in a regular Chrome tab once and accept the certificate warning. Until you do this, every `fetch()` from the extension to Obsidian will fail with a generic network error (a `TypeError`, not a clean HTTP status) — this is expected and is exactly what Milestone 6's "Obsidian cert untrusted" error state detects.
+1. **Obsidian Local REST API plugin** — install and enable the community plugin, note its API key (Settings → Local REST API), and turn on **"Non-encrypted (HTTP) Server"**, noting its port (default `27123`).
+2. **Use the HTTP port, not HTTPS** — Primer talks to Obsidian over plain HTTP on `127.0.0.1`, which Chrome treats as a secure context regardless of scheme. This avoids the plugin's self-signed HTTPS certificate entirely: clicking through a cert warning in a regular browser tab does not make the extension's service worker trust that cert, so HTTPS is unusable here in practice. If Obsidian is not running, the Local REST API plugin is disabled, or the HTTP server toggle is off, every `fetch()` from the extension to Obsidian will fail with a generic network error (a `TypeError`, not a clean HTTP status) — this is expected and is exactly what Milestone 6's "Obsidian unreachable" error state detects.
 3. **Load the extension** — `chrome://extensions` → enable Developer mode → "Load unpacked" → select this directory.
 4. **Open Primer's options page** (right-click the toolbar icon → Options, or via the extensions page) and enter your Anthropic API key, Tavily API key, Obsidian API key/port, and vault folder scope (`LinkedIn Outreach` by default — settled, see Implementation Spec Section 4).
 
