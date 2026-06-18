@@ -13,7 +13,7 @@ test("sanitizeFilename strips filesystem-invalid characters and collapses whites
   assert.equal(sanitizeFilename("  Multiple   Spaces  "), "Multiple Spaces");
 });
 
-test("buildFrontmatter renders all required fields with the fixed tag set", () => {
+test("buildFrontmatter renders all required fields with the fixed tag set, quoted as YAML scalars", () => {
   const fm = buildFrontmatter({
     name: "Jane Doe",
     headline: "VP Eng",
@@ -24,16 +24,33 @@ test("buildFrontmatter renders all required fields with the fixed tag set", () =
     lastResearchDate: "2026-06-17",
   });
   assert.match(fm, /^---\n/);
-  assert.match(fm, /name: Jane Doe/);
-  assert.match(fm, /linkedin_url: https:\/\/www\.linkedin\.com\/in\/janedoe\//);
+  assert.match(fm, /name: 'Jane Doe'/);
+  assert.match(fm, /linkedin_url: 'https:\/\/www\.linkedin\.com\/in\/janedoe\/'/);
+  assert.match(fm, /first_contact_date: 2026-06-17/);
   assert.match(fm, /tags: \[crm, outreach\]/);
   assert.match(fm, /\n---\n/);
 });
 
-test("buildFrontmatter renders empty string for null fields, never the literal 'null'", () => {
+test("buildFrontmatter renders an empty quoted string for null fields, never the literal 'null'", () => {
   const fm = buildFrontmatter({ name: "Jane Doe", headline: null, company: null, role: null, linkedinUrl: "u", firstContactDate: "d", lastResearchDate: "d" });
   assert.doesNotMatch(fm, /null/);
-  assert.match(fm, /headline: \n/);
+  assert.match(fm, /headline: ''/);
+});
+
+test("buildFrontmatter neutralizes embedded newlines and quotes so scraped text cannot inject extra frontmatter keys", () => {
+  const fm = buildFrontmatter({
+    name: "Evil\nheadline: fake\ntags: [pwned]",
+    headline: "It's a trap",
+    company: null,
+    role: null,
+    linkedinUrl: "https://www.linkedin.com/in/x/",
+    firstContactDate: "d",
+    lastResearchDate: "d",
+  });
+  assert.doesNotMatch(fm, /\nheadline: fake/);
+  assert.doesNotMatch(fm, /\ntags: \[pwned\]/);
+  assert.match(fm, /name: 'Evil headline: fake tags: \[pwned\]'/);
+  assert.match(fm, /headline: 'It''s a trap'/);
 });
 
 test("buildResearchLogEntry renders summary, connection points with basis, and talking points", () => {
