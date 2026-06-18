@@ -23,6 +23,12 @@
       "run_at": "document_idle"
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["content/content-script.js", "lib/linkedin-selectors.js"],
+      "matches": ["https://www.linkedin.com/*"]
+    }
+  ],
   "options_page": "options/options.html",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
