@@ -22,7 +22,6 @@ Runs Node's built-in test runner against every pure, I/O-free function in `lib/`
 ## ⚠️ Items flagged per Implementation Spec Section 11 — do not treat as verified
 
 1. **LinkedIn selectors (`lib/linkedin-selectors.js`)** are illustrative placeholders, not selectors confirmed against live LinkedIn markup. Verifying them requires opening real LinkedIn profile/DM pages in an authenticated browser session and inspecting the actual DOM — something only you (the account owner) can do, and the spec calls this out as the first task of Milestone 1. **Before relying on this extension for real outreach:** open a few real profiles and a real DM thread with DevTools open, compare the actual class names to `SELECTORS`, and update any that don't match. If a field still can't be read reliably after reasonable fallback attempts, that's the case the spec asks to flag rather than ship silently — note here which field and what you tried.
-2. **Tavily request shape (`lib/tavily-client.js`)** — the `POST` body with `api_key` inline is written from general knowledge of Tavily's API, not confirmed against current docs. Confirm the exact current request shape at https://tavily.com (or their docs) before relying on deep-research mode.
 
 ## Manual verification checklist (Implementation Spec Section 8)
 
